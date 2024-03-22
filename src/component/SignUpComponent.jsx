@@ -133,6 +133,7 @@ const SignUpComponent = () => {
                                     </Grid>
 
                                 </Grid>
+                                
                                 <Button
                                     type="submit"
                                     fullWidth
