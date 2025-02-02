@@ -61,7 +61,7 @@ const Heder = () => {
                               </ul>
                               <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
                                    <li>
-                                        <Link className="nav-link" to="/login">
+                                        <Link className="nav-link" to="/">
                                              <img src={user} />
                                         </Link>
                                    </li>

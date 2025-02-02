@@ -17,35 +17,48 @@ import '../css/tiny-slider.css';
 import '../css/style.css';
 import Footer from './Footer';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const defaultTheme = createTheme();
 
 
 const SignUpComponent = () => {
- 
+    const navigate = useNavigate(); // Hook for navigation
+
     const [signUpData, setSignUpData] = useState({
-        firstname: "",
-        lastname: "",
+        username: "",
         email: "",
         password: "",
-    })
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setSignUpData({ ...signUpData, [name]: value });
-    }
+    };
 
-    const handleSubmit = () => {
-        // Insert data
-        fetch('http://localhost:3000/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(signUpData)
-        })
-            .then(res => res.json())
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent default form submission
 
+        try {
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(signUpData)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("User registered successfully:", data);
+                navigate('/login'); // Redirect to login after success
+            } else {
+                console.error("Signup failed:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 
     return (
@@ -81,33 +94,21 @@ const SignUpComponent = () => {
                             Sign up
                         </Typography>
 
-                        <form onSubmit={handleSubmit} method='post'>
-
-                            <Box  noValidate  sx={{ mt: 3 }} >
+                        <form onSubmit={handleSubmit}>
+                            <Box noValidate sx={{ mt: 3 }}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12}>
                                         <TextField
-                                            autoComplete="given-name"
-                                            name="firstname"
+                                            name="username"
                                             required
                                             fullWidth
-                                            id="firstName"
-                                            label="First Name"
+                                            id="username"
+                                            label="User Name"
                                             autoFocus
                                             onChange={handleChange}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            id="lastName"
-                                            label="Last Name"
-                                            name="lastname"
-                                            autoComplete="family-name"
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
+
                                     <Grid item xs={12}>
                                         <TextField
                                             required
@@ -115,7 +116,6 @@ const SignUpComponent = () => {
                                             id="email"
                                             label="Email Address"
                                             name="email"
-                                            autoComplete="email"
                                             onChange={handleChange}
                                         />
                                     </Grid>
@@ -127,13 +127,11 @@ const SignUpComponent = () => {
                                             label="Password"
                                             type="password"
                                             id="password"
-                                            autoComplete="new-password"
                                             onChange={handleChange}
                                         />
                                     </Grid>
-
                                 </Grid>
-                                
+
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -144,7 +142,6 @@ const SignUpComponent = () => {
                                 </Button>
                                 <Grid container justifyContent="flex-end">
                                     <Grid item>
-                                        {/* Use Link from React Router */}
                                         <Link to="/login" variant="body2">
                                             Sign in
                                         </Link>
@@ -158,6 +155,6 @@ const SignUpComponent = () => {
             <Footer />
         </div>
     );
-}
+};
 
 export default SignUpComponent;

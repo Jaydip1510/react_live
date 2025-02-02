@@ -16,7 +16,9 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path='/' element={<NavBar/>} />
+        <Route path='/' element={<LoginComponent/>} />
+        <Route path='/register' element={<SignUpComponent/>} />
+        <Route path='/navbar' element={<NavBar/>} />
         <Route path='/shop' element={<Shop/>} />
         <Route path='/about' element={<AboutUs/>} />
         <Route path='/services' element={<Services/>} />
@@ -25,8 +27,7 @@ function App() {
         <Route path='/cart' element={<Cart/>} />
         <Route path='/checkout' element={<CheckOut/>} />
         <Route path='/thankyou' element={<ThankYou/>} />
-        <Route path='/login' element={<LoginComponent/>} />
-        <Route path='/register' element={<SignUpComponent/>} />
+        
       </Routes>
 
     </div>

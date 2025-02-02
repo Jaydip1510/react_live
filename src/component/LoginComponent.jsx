@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate  } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -22,14 +22,34 @@ import Footer from './Footer';
 
 const defaultTheme = createTheme();
 const LoginComponent = () => {
-    const handleSubmit = (event) => {
+    const navigate = useNavigate(); // ✅ Hook to redirect user
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
+        const loginData = {
             email: data.get('email'),
             password: data.get('password'),
-        });
+        };
+
+        try {
+            const response = await fetch('http://localhost:3000/register'); // Fetch all registered users
+            const users = await response.json();
+
+            const user = users.find((u) => u.email === loginData.email && u.password === loginData.password);
+
+            if (user) {
+                console.log("Login Successful:", user);
+                navigate('/navbar'); // ✅ Redirect to NavBar page
+            } else {
+                alert("Invalid email or password!");
+            }
+        } catch (error) {
+            console.error("Error logging in:", error);
+            alert("Something went wrong. Please try again.");
+        }
     };
+
     return (
         <div>
             <Heder />
@@ -48,14 +68,7 @@ const LoginComponent = () => {
             <ThemeProvider theme={defaultTheme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
-                    <Box
-                        sx={{
-                            marginTop: 8,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}
-                    >
+                    <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                             <LockOutlinedIcon />
                         </Avatar>
@@ -83,16 +96,8 @@ const LoginComponent = () => {
                                 id="password"
                                 autoComplete="current-password"
                             />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
+                            <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+                            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                                 Sign In
                             </Button>
                             <Grid container>
@@ -101,23 +106,19 @@ const LoginComponent = () => {
                                         Forgot password?
                                     </Link>
                                 </Grid>
-
                                 <Grid item xs>
                                     <Link to="/register" variant="body2">
                                         Sign Up
                                     </Link>
                                 </Grid>
-
                             </Grid>
                         </Box>
                     </Box>
-
                 </Container>
             </ThemeProvider>
             <Footer />
         </div>
     );
-
-}
+};
 
 export default LoginComponent;
